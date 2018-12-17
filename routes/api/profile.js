@@ -3,6 +3,9 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
 
+//Load validaton
+const validateProfileInput = require('../../validation/profile')
+
 //Load profile model
 const Profile = require('../../models/Profile');
 //Load user model
@@ -23,6 +26,7 @@ router.get('/',passport.authenticate('jwt',{ session: false }), (req, res)=> {
   Profile.findOne({
     user: req.user.id
   })
+  .populate('user',['name','avatar'])
   .then(profile => {
     if(!profile){
       errors.noprofile = 'There is no profile for this user'
@@ -37,6 +41,15 @@ router.get('/',passport.authenticate('jwt',{ session: false }), (req, res)=> {
 // desc Create or Edit user profile
 // access Private
 router.post('/',passport.authenticate('jwt',{ session: false }), (req, res)=> {
+
+  const { errors, isValid } = validateProfileInput(req.body)
+
+  //Check validaton
+  if(!isValid){
+    return res.status(404).json(errors)
+  }
+
+  //Get fields
   const profileFields = {}
 
   profileFields.user = req.user.id;
@@ -48,7 +61,7 @@ router.post('/',passport.authenticate('jwt',{ session: false }), (req, res)=> {
   if(req.body.status) profileFields.status = req.body.status;
   if(req.body.githubusername) profileFields.githubusername = req.body.githubusername;
   //skills - split into array
-  if(typeof req.body.skills !== 'undefined') {
+  if(typeof req.body.skills !== undefined) {
     profileFields.skills = req.body.skills.split(',');
   }
 
@@ -75,18 +88,17 @@ router.post('/',passport.authenticate('jwt',{ session: false }), (req, res)=> {
       //Create
 
       //Check if handle exists
-      Profile.findOne({ handle: profileFields }).then(profile => {
+      Profile.findOne({ handle: req.body.handle }).then(profile => {
         if(profile){
           errors.handle = 'That handle already exists';
           return res.status(404).json(errors)
         }
         //Save profile
         new Profile(profileFields).save().then(profile => res.json(profile))
-      })
+      }).catch(err=> console.log(err))
     }
   })
 
-  if(req.body.handle) profileFields.handle = req.body.handle;
 });
 
 
