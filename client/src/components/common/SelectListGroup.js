@@ -21,7 +21,7 @@ const SelectListGroup = ({
   ))
   return (
     <div className="form-group">
-      <select type={type}  className = {classnames('form-control form-control-lg',{
+      <select type={type} className = {classnames('form-control form-control-lg',{
           'is-invalid':error
         })} name={name} value={value} onChange={onChange} required >
         {selectOptions}
@@ -37,7 +37,6 @@ SelectListGroup.propTypes = {
   value: PropTypes.string.isRequired,
   error: PropTypes.string,
   info: PropTypes.string,
-  type: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired
 }

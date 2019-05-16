@@ -41,23 +41,24 @@ class Navbar extends Component {
     )
 
     return (
-      <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
-        <div className="container">
-          <Link className="navbar-brand" to="/">DevConnect</Link>
-          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#mobile-nav">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-
-          <div className="collapse navbar-collapse" id="mobile-nav">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link className="nav-link" to="/profiles"> {' '}Developers
+      <nav className="navbar bg-dark">
+          <h1>
+            <Link to="/"><i className="fas fa-code"></i> DevConnect</Link>
+          </h1>
+            <ul>
+              <li>
+                <Link to="/profiles">Developers
+                </Link>
+              </li>
+              <li>
+                <Link to="/register">Register
+                </Link>
+              </li>
+              <li>
+                <Link to="/login">Login
                 </Link>
               </li>
             </ul>
-            {isAuthenticated ? authLinks : guestLinks}
-          </div>
-        </div>
       </nav>
     )
   }
