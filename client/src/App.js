@@ -13,6 +13,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Landing from './components/layout/Landing';
 import Register from './components/auth/Register';
+import Alert from './components/layout/Alert';
 import Login from './components/auth/Login';
 import Dashboard from './components/dashboard/Dashboard';
 import CreateProfile from './components/create-profile/CreateProfile';
@@ -45,6 +46,7 @@ class App extends Component {
           <Fragment>
             <Navbar />
             <Route exact path="/" component= { Landing } />
+            <Alert />
             <section className="container">
               <Route exact path="/register" component= { Register } />
               <Route exact path="/login" component= { Login } />

@@ -1,29 +1,28 @@
-import React, { Fragment, Component } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 //import classnames from 'classnames';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { loginUser } from '../../actions/authActions';
 import TextFieldGroup from '../common/TextFieldGroup';
 
-class Login extends Component {
+const Login = () => {
 
-  constructor(){
-    super();
-    this.state = {
-      email: '',
-      password: '',
-      errors: {}
-    }
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
 
-    //this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+  const { email, password } = formData;
+
+  const onChange = e => setFormData({...formData, [e.target.name]: e.target.value})
+
+  const onSubmit = async e => {
+    e.preventDefault();
+    console.log('SUCCESS')
   }
 
-  onChange = (e) => {
-    this.setState({[e.target.name]: e.target.value})
-  }
-
-  componentDidMount() {
+  /*componentDidMount() {
     if(this.props.auth.isAuthenticated){
       this.props.history.push('/dashboard')
     }
@@ -37,65 +36,44 @@ class Login extends Component {
     if(nextProps.errors){
       this.setState({errors: nextProps.errors})
     }
-  }
-
-  onSubmit(e){
-    e.preventDefault();
-
-    const userData = {
-      email: this.state.email,
-      password: this.state.password
-    }
-
-    this.props.loginUser(userData)
-  }
-
-  render(){
-    const { errors } = this.state;
-
+  }*/
     return(
       <Fragment>
-        <div className="login">
-          <div className="container">
-              <h1 class="large text-primary">Sign In</h1>
-              <p class="lead"><i class="fas fa-user"></i> Sign into Your Account</p>
-              <form className="form" onSubmit={this.onSubmit}>
+              <h1 className="large text-primary">Sign In</h1>
+              <p className="lead"><i className="fas fa-user"></i> Sign into Your Account</p>
+              <form className="form" onSubmit={e => onSubmit(e)}>
                   <TextFieldGroup
                     placeholder="Email Address"
                     name="email"
                     type="email"
-                    value={this.state.email}
-                    onChange={this.onChange}
-                    error={errors.email}
+                    value={email}
+                    onChange={e => onChange(e)}
                   />
 
                   <TextFieldGroup
                     placeholder="Password"
                     name="password"
                     type="password"
-                    value={this.state.password}
-                    onChange={this.onChange}
-                    error={errors.password}
+                    value={password}
+                    onChange={e => onChange(e)}
                   />
-
                   <input type="submit" className="btn btn-primary" />
               </form>
-          </div>
-        </div>
+              <p className="my-1">
+                Don't have an account? <Link to="/register">Sign Up</Link>
+              </p>
       </Fragment>
     )
-  }
 }
 
-Login.propTypes = {
-  loginUser: PropTypes.func.isRequired,
+/*  loginUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
-}
+}*/
 
-const mapStateToProps = (state) => ({
+/*const mapStateToProps = (state) => ({
   auth: state.auth,
   errors: state.errors
-})
+})*/
 
-export default connect(mapStateToProps, { loginUser })(Login);
+export default Login;
