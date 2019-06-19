@@ -1,57 +1,74 @@
 import axios from 'axios';
-import setAuthToken from '../utils/setAuthToken'
-import { GET_ERRORS, SET_CURRENT_USER } from './types';
-import jwt_decode from 'jwt-decode';
+import { setAlert } from './alert';
+import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR } from './types';
+import setAuthToken from '../utils/setAuthToken';
 
-//Register User
-export const registerUser = (userData, history) => dispatch => {
-  axios.post('/api/users/register', userData)
-  .then(res => history.push('/login'))
-  .catch(err =>
+
+//Load User
+export const loadUser = () => async dispatch => {
+  if(localStorage.token){
+    setAuthToken(localStorage.token);
+  }
+
+  try {
+    const res = await axios.get('/api/auth')
+
     dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    })
-  );
+      type: USER_LOADED,
+      payload: res.data
+    });
+  } catch (err){
 
+    dispatch({
+      type: AUTH_ERROR
+    })
+  }
 }
 
-//Login - Get user token
-export const loginUser = userData => dispatch => {
-  axios.post('/api/users/login',userData)
-  .then(res => {
-    const { token } = res.data;
-    //Set token to localStorage
-    localStorage.setItem('jwtToken',token)
-    //Set toke to auth header
-    setAuthToken(token);
+//Register User
+export const register = ({ name, email, password }) => async dispatch => {
+  console.log("sss")
+  const config = {
+    headers : {
+      'Content-type': 'application/json'
+    }
+  }
 
-    const decoded = jwt_decode(token)
+  const body = JSON.stringify({ name, email, password })
 
-    dispatch(setCurrentUser(decoded))
-  })
-  .catch(err =>
+  try {
+    const res = await axios.post('/api/users', body, config);
+
     dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    })
-  )
+      type: REGISTER_SUCCESS,
+      payload: res.data
+    });
+  } catch(err) {
+    const errors = err.response.data.errors;
 
+    if(errors){
+      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')))
+    }
+
+    dispatch({
+      type: REGISTER_FAIL
+    });
+  }
 }
 
 //Set Logged in user
 export const setCurrentUser = decoded => {
-  return {
+  /*return {
     type: SET_CURRENT_USER,
     payload: decoded
-  }
+  }*/
 }
 
 //Log user out
 export const logoutUser = () => dispatch => {
 
   localStorage.removeItem('jwtToken')
-  setAuthToken(false);
-  dispatch(setCurrentUser({}))
+  //setAuthToken(false);
+  //dispatch(setCurrentUser({}))
 
 }

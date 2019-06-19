@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router , Route, Switch} from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import setAuthToken from './utils/setAuthToken';
-import { setCurrentUser, logoutUser } from './actions/authActions';
+import { loadUser, logoutUser } from './actions/authActions';
 import { clearCurrentProfile } from './actions/profileActions';
 import { Provider } from 'react-redux';
 import store from './store';
@@ -21,33 +21,27 @@ import CreateProfile from './components/create-profile/CreateProfile';
 import './App.css';
 
 //Check for jwtToken
-if(localStorage.jwtToken){
+if(localStorage.token){
   //Set auth token header auth
-  setAuthToken(localStorage.jwtToken)
-
-  const decoded = jwt_decode(localStorage.jwtToken)
-  store.dispatch(setCurrentUser(decoded))
-
+  setAuthToken(localStorage.token)
   //Check token expired
-  const currentTime = Date.now()/1000;
-  if( decoded.exp < currentTime){
-    store.dispatch(clearCurrentProfile())
-    store.dispatch(logoutUser())
-    window.location.href = '/login';
 
-  }
 }
 
-class App extends Component {
-  render() {
+const App = () => {
+
+    //useEffect(() => {
+      //store.dispatch(loadUser())
+    //},[]);
+
     return (
       <Provider store={ store }>
         <Router>
           <Fragment>
             <Navbar />
             <Route exact path="/" component= { Landing } />
-            <Alert />
             <section className="container">
+              <Alert />
               <Route exact path="/register" component= { Register } />
               <Route exact path="/login" component= { Login } />
               <Switch>
@@ -61,7 +55,6 @@ class App extends Component {
         </Router>
       </Provider>
     );
-  }
 }
 
 export default App;

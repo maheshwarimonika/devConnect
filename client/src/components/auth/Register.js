@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { registerUser } from '../../actions/authActions';
+import { register } from '../../actions/authActions';
 import { setAlert } from '../../actions/alert';
 import TextFieldGroup from '../common/TextFieldGroup';
 
@@ -26,28 +26,7 @@ const Register = ({ setAlert }) => {
     if(password != password2){
       setAlert('Passwords do not match','danger')
     } else{
-      /*const newUser = {
-        name,
-        email,
-        password,
-        password2
-      };
-
-      try {
-        const config = {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        };
-
-        const body = JSON.stringify(newUser);
-
-        const res = await axios.post('/api/users/register', body, config);
-        console.log(res.data)
-
-      } catch (err) {
-        console.log(err.response.data)
-      }*/
+      register({ name, email, password })
     }
   }
 
@@ -94,68 +73,11 @@ const Register = ({ setAlert }) => {
     </Fragment>
   )
 };
-/*class Register extends Component {
-
-  constructor(){
-    super();
-    this.state = {
-      name: '',
-      email: '',
-      password: '',
-      password2: '',
-      errors: {}
-    }
-
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    if(this.props.auth.isAuthenticated){
-      this.props.history.push('/dashboard')
-    }
-  }
-
-
-  componentWillReceiveProps(nextProps){
-    if(nextProps.errors){
-      this.setState({errors: nextProps.errors})
-    }else{
-
-    }
-  }
-
-  onChange(e){
-    this.setState({[e.target.name]: e.target.value})
-  }
-
-  onSubmit(e){
-    e.preventDefault();
-
-    const newUser = {
-      name: this.state.name,
-      email: this.state.email,
-      password: this.state.password,
-      password2: this.state.password2
-    }
-
-    this.props.registerUser(newUser, this.props.history)
-
-  }
-
-  render(){
-
-    const { errors } = this.state;
-
-    const { user } = this.props.auth;
-
-
-  }
-}*/
 
 Register.propTypes = {
-  setAlert: PropTypes.func.isRequired
+  setAlert: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired
 };
 
 
-export default connect(null , { setAlert })(Register);
+export default connect(null , { setAlert, register })(Register);

@@ -1,18 +1,38 @@
 import isEmpty from '../validation/is-empty'
-import { SET_CURRENT_USER } from '../actions/types';
+import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR } from '../actions/types';
 
 const initialState = {
-  isAuthenticated: false,
-  user: {}
+  token: localStorage.getItem('token'),
+  isAuthenticated: null,
+  loading: true,
+  user: null
 }
 
 export default function(state = initialState,action){
   switch (action.type) {
-    case SET_CURRENT_USER:
+    case USER_LOADED:
       return {
         ...state,
-        isAuthenticated: (!isEmpty(action.payload)),
+        isAuthenticated: true,
+        loading: false,
         user: action.payload
+      }
+    case REGISTER_SUCCESS:
+      localStorage.setItem('token', action.payload.token)
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload,
+        loading: false
+      }
+    case REGISTER_FAIL:
+    case AUTH_ERROR:
+      localStorage.removeItem('token')
+      return {
+        ...state,
+        token:null,
+        isAuthenticated: false,
+        loading: false
       }
     default:
       return state
