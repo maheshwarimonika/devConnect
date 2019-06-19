@@ -8,7 +8,7 @@ import { register } from '../../actions/authActions';
 import { setAlert } from '../../actions/alert';
 import TextFieldGroup from '../common/TextFieldGroup';
 
-const Register = ({ setAlert }) => {
+const Register = ({ setAlert, register }) => {
 
   const [formData, setFormData] = useState({
     name: '',

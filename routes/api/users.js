@@ -25,7 +25,7 @@ router.get('/test', (req,res) =>
 );
 
 // @route POST api/users
-// @desc Register user
+// @desc Register user & get access token
 // @access Public
 router.post(
   '/',
